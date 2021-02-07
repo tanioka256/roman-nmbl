@@ -33,7 +33,7 @@ import com.itextpdf.text.pdf.*;
 
 class RomanNmbl {
     public static void main(String args[]) {
-        if (args.length != 3) {
+        if (args.length != 4) {
             usage();
             return;
         }
@@ -47,10 +47,18 @@ class RomanNmbl {
             stamper = new PdfStamper(reader, new FileOutputStream(args[1]));
             
             PdfPageLabels labels = new PdfPageLabels();
-            if (maxpage > 0)
-                labels.addPageLabel(1, PdfPageLabels.LOWERCASE_ROMAN_NUMERALS, null, 1);
-            if (maxpage > Integer.parseInt(args[2]))
-                labels.addPageLabel(Integer.parseInt(args[2]) + 1, PdfPageLabels.DECIMAL_ARABIC_NUMERALS, null, 1);
+
+            int start_page = 1;
+            if (start_page <= maxpage)
+                labels.addPageLabel(start_page, PdfPageLabels.EMPTY);
+
+            start_page += Integer.parseInt(args[2]);
+            if (start_page <= maxpage)
+                labels.addPageLabel(start_page, PdfPageLabels.LOWERCASE_ROMAN_NUMERALS);
+
+            start_page += Integer.parseInt(args[3]);
+            if (start_page <= maxpage)
+                labels.addPageLabel(start_page, PdfPageLabels.DECIMAL_ARABIC_NUMERALS);
             
             stamper.getWriter().setPageLabels(labels);
             stamper.close();
@@ -65,6 +73,6 @@ class RomanNmbl {
     }
     
     static void usage() {
-        System.out.println("java -classpath /usr/share/java/itext.jar:. RomanNmbl InPDFfile OutPDFfile Final#-of-Roman-nombre");
+        System.out.println("java -classpath /usr/share/java/itext5.jar:. RomanNmbl InPDFfile OutPDFfile NumPages-Unnumbered NumPages-Roman-Numerals");
     }
 }
